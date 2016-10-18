@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %} {{user.username}} {% endblock %}
+
+{% block content %}
+  <h2> {{user.username}} </h2>
+
+  <h3> User posts: <h3>
+    {% if user.user_posts %}
+      {% for post in user.user_posts.all %}
+      <div class="center-block">
+        <a href="/posts/{{ post.id }}/">{{ post.title }}</a>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No posts are available.</p>
+    {% endif %}
+  <h3> User comments: <h3>
+    {% if user.user_comments %}
+      {% for comment in user.user_comments.all %}
+      <div class="center-block">
+        <a href="/comments/{{ comment.id }}/">{{ comment.comment }}</a>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No comments are available.</p>
+    {% endif %}
+{% endblock %}

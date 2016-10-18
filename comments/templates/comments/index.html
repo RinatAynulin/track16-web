@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %} Latest comments {% endblock %}
+{% block header %} Lastest comments {% endblock %}
+{% block content %}
+  {% if latest_comments_list %}
+  <ul>
+  {% for comment in latest_comments_list %}
+      <li><a href="/comments/{{ comment.id }}/">{{ comment.comment }}</a></li>
+  {% endfor %}
+  </ul>
+  {% else %}
+  <p>No comments are available.</p>
+  {% endif %}
+{% endblock%}

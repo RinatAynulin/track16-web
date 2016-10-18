@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %} {{post.title}} {% endblock %}
+{% block header %} {{post.title}} {% endblock %}
+{% block content%}
+  <h2><a target="_blank" href={{post.url}}>{{ post.title }}</a></h2>
+  <p>{{post.description}}</p>
+  {{ post.created_at }} | by <a target ="_blank" href="/users/{{ post.user.id }}/">{{post.user}} </a> | rating: {{post.score}} | <a target="_blank" href="{% url 'detail' post.id %}">comments</a>
+
+  <h5>{{post.comments_count}} comments:</h5>
+  {% if post.post_comments.all  %}
+  <ul>
+  {% for comment in post.post_comments.all %}
+    <div class="center-block">
+      <li><a href="/comments/{{ comment.id }}/">{{ comment.comment }}</a></li>
+      <p> by {{comment.user}} at {{comment.created_at}}</p>
+    </div>
+  {% endfor %}
+  </ul>
+  {% else %}
+  <p>No comments are available.</p>
+  {% endif %}
+{% endblock%}

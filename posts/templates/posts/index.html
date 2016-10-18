@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %} Latest posts {% endblock %} {% block content %}
+<h1> Latest Posts </h1> {% if latest_posts_list %} {% for post in latest_posts_list %}
+<div class="post">
+  <h2><a target="_blank" href={{post.url}}>{{ post.title }}</a></h2>
+  <div class="meta">
+    {{ post.created_at }} | by <a target ="_blank" href="/users/{{ post.user.id }}/">{{post.user}} </a> | rating: {{post.score}} | <a target="_blank" href="{% url 'detail' post.id %}">comments</a>
+  </div>
+
+</div>
+{% endfor %} {% else %}
+<p>No posts are available.</p>
+{% endif %} {% endblock%}
