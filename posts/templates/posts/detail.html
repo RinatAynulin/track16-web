@@ -30,6 +30,10 @@
         <p>No comments are available.</p>
     {% endif %}
 
+    {% if user.is_anonymous %}
+        <h5>You must be logged in in order to add comments!</h5>
+        <a href="{% url "core:login" %}">Log in</a>
+    {% else %}
     <form method="post">
         {% csrf_token %}
         <div>
@@ -43,6 +47,6 @@
             <input type="submit" value="Send comment">
         </div>
     </form>
-
+    {% endif %}
 
 {% endblock %}
