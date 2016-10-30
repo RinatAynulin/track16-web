@@ -1,12 +1,98 @@
-{% extends "base.html" %} {% load staticfiles %} {% block title %} Latest posts {% endblock %} {% block content %}
-<h1> Latest Posts </h1> {% if latest_posts_list %} {% for post in latest_posts_list %}
-<div class="post">
-  <h2><a target="_blank" href={{post.url}}>{{ post.title }}</a></h2>
-  <div class="meta">
-    {{ post.created_at }} | by <a target ="_blank" href="/users/{{ post.user.id }}/">{{post.user}} </a> | rating: {{post.score}} | <a target="_blank" href="{% url 'detail' post.id %}">comments</a>
-  </div>
+{% extends "base.html" %}
+{% load staticfiles %}
 
-</div>
+{% block additional_style %}
+    <style>
+        .search-form {
+            padding-top: 5px;
+        }
+        .search-form .form-group {
+            float: right !important;
+            transition: all 0.35s, border-radius 0s;
+            width: 32px;
+            height: 32px;
+            background-color: #fff;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+        }
+
+        .search-form .form-group input.form-control {
+            padding-right: 20px;
+            border: 0 none;
+            background: transparent;
+            box-shadow: none;
+            display: block;
+        }
+
+        .search-form .form-group input.form-control::-webkit-input-placeholder {
+            display: none;
+        }
+
+        .search-form .form-group input.form-control:-moz-placeholder {
+            /* Firefox 18- */
+            display: none;
+        }
+
+        .search-form .form-group input.form-control::-moz-placeholder {
+            /* Firefox 19+ */
+            display: none;
+        }
+
+        .search-form .form-group input.form-control:-ms-input-placeholder {
+            display: none;
+        }
+
+        .search-form .form-group:hover,
+        .search-form .form-group.hover {
+            width: 100%;
+            border-radius: 4px 25px 25px 4px;
+        }
+
+        .search-form .form-group span.form-control-feedback {
+            position: absolute;
+            top: -1px;
+            right: -2px;
+            z-index: 2;
+            display: block;
+            width: 34px;
+            height: 34px;
+            line-height: 34px;
+            text-align: center;
+            color: #3596e0;
+            left: initial;
+            font-size: 14px;
+        }
+
+    </style>
+{% endblock %}
+{% block title %} Latest posts {% endblock %}
+{% block content %}
+
+    <h1> Latest Posts </h1> {% if latest_posts_list %} {% for post in latest_posts_list %}
+    <div class="post">
+        <h2><a target="_blank" href={{ post.url }}>{{ post.title }}</a></h2>
+        <div class="meta">
+            {{ post.created_at }} | by <a target="_blank" href="/users/{{ post.user.id }}/">{{ post.user }} </a> |
+            rating: {{ post.score }} | <a target="_blank"
+                                          href="{% url 'posts:detail' post.id %}">comments({{ post.comments_count }})</a>
+            | {% if user == post.user %} <a href="{% url 'posts:edit' post.id %}">Edit</a>  {% endif %}
+        </div>
+
+    </div>
 {% endfor %} {% else %}
-<p>No posts are available.</p>
-{% endif %} {% endblock%}
+    <p>No posts are available.</p>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+    <a target="_blank" href="{% url "posts:submit" %}" class="btn btn-large btn-danger btn-red">Submit a new post</a>
+
+    <form action="" class="search-form">
+        <div class="form-group has-feedback">
+            <label for="search" class="sr-only">Search</label>
+            <input type="text" class="form-control" name="q" id="search" placeholder="search">
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+    </form>
+{% endblock %}

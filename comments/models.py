@@ -6,7 +6,7 @@ from django.conf import settings
 class Comment(models.Model):
     post = models.ForeignKey('posts.Post', related_name='post_comments')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_comments')
-    comment = models.TextField(max_length=1000)
+    comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='child_set')
 

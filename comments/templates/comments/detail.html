@@ -3,5 +3,15 @@
 {% block title %} {{comment.title}} {% endblock %}
 {% block header %} {{comment.title}} {% endblock %}
 {% block content%}
-  {{comment}}
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div>{{ field.label_tag }}{{ field }}</div>
+        {% for error in field.errors %}
+            <b>{{ error }}</b>
+        {% endfor %}
+    {% endfor %}
+
+    <input type="submit" value="Edit comment">
+  </form>
 {% endblock%}

@@ -1,23 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %} {{post.title}} {% endblock %}
-{% block header %} {{post.title}} {% endblock %}
-{% block content%}
-  <h2><a target="_blank" href={{post.url}}>{{ post.title }}</a></h2>
-  <p>{{post.description}}</p>
-  {{ post.created_at }} | by <a target ="_blank" href="/users/{{ post.user.id }}/">{{post.user}} </a> | rating: {{post.score}} | <a target="_blank" href="{% url 'detail' post.id %}">comments</a>
+{% block title %} {{ post.title }} {% endblock %}
+{% block header %} {{ post.title }} {% endblock %}
+{% block content %}
 
-  <h5>{{post.comments_count}} comments:</h5>
-  {% if post.post_comments.all  %}
-  <ul>
-  {% for comment in post.post_comments.all %}
-    <div class="center-block">
-      <li><a href="/comments/{{ comment.id }}/">{{ comment.comment }}</a></li>
-      <p> by {{comment.user}} at {{comment.created_at}}</p>
-    </div>
-  {% endfor %}
-  </ul>
-  {% else %}
-  <p>No comments are available.</p>
-  {% endif %}
-{% endblock%}
+    <h2><a target="_blank" href={{ post.url }}>{{ post.title }}</a></h2>
+    <p>{{ post.description }}</p>
+    {{ post.created_at }} | by <a target="_blank" href="/users/{{ post.user.id }}/">{{ post.user }} </a> | rating:
+    {{ post.score }} | <a target="_blank" href="{% url 'posts:detail' post.id %}">comments</a> |
+    {% if user == post.user %} <a href="{% url 'posts:edit' post.id %}">Edit</a>  {% endif %}
+
+    <h5>{{ post.comments_count }} comments:</h5>
+    {% if post.post_comments.all %}
+        <ul>
+            {% for comment in post.post_comments.all %}
+                <div class="center-block">
+                    <li>{{ comment.comment }}</li>
+                    <p>
+                        by {{ comment.user }} at {{ comment.created_at }}
+                        {% if comment.user == user %}
+                            <a href="{% url "comments:edit" pk=comment.id %}">Edit</a>
+                        {% endif %}
+                    </p>
+
+                </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments are available.</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.comment }}
+
+            {% for error in form.comment.errors %}
+                <div><b>{{ error }}</b></div>
+            {% endfor %}
+        </div>
+        <div>
+            <input type="submit" value="Send comment">
+        </div>
+    </form>
+
+
+{% endblock %}

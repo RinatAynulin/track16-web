@@ -7,7 +7,7 @@
       }
 
       .form-submit {
-        max-width: 300px;
+        max-width: 400px;
         padding: 19px 29px 29px;
         margin: 0 auto 20px;
         background-color: #fff;
@@ -35,14 +35,19 @@
     <form method="post" class="form-submit">
     <h2 class="form-submit-heading">Submit a new post</h2>
         {% csrf_token %}
-        {{ form }}
+        {% for field in form %}
+            <p>{{ field.label }}</p>
+            <p>{{ field }}</p>
+            <p>{{ field.errors }}</p>
+        {% endfor %}
         {% for error in form.errors %}
             <div>error</div>
         {% endfor %}
         <button class="btn btn-large btn-primary" type="submit">Submit</button>
     </form>
     {% else %}
-    <h3>You're already logged in </h3>
+    <h3> You must login before submitting </h3>
+    <h3><a href="{% url "core:login" %}">Log in</a><h3>
     {% endif %}
 
 {% endblock %}

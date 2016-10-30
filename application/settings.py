@@ -85,6 +85,10 @@ DATABASES = {
 }
 
 
+LOGIN_REDIRECT_URL = "core:index"
+LOGIN_URL = "core:login"
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
