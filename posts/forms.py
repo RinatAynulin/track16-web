@@ -10,7 +10,3 @@ class PostForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     q = forms.CharField(max_length=100)
-
-class OrderByForm(forms.Form):
-    CHOICES = (('-created_at', u'Publication time'), ('green', u'rating'))
-    order = forms.ChoiceField(choices=CHOICES, label=u'Order by')

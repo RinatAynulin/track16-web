@@ -2,7 +2,7 @@ import operator
 from functools import reduce
 
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.shortcuts import render, get_object_or_404, redirect
@@ -21,14 +21,22 @@ class PostList(ListView):
     template_name = 'posts/index.html'
     context_object_name = 'latest_posts_list'
     model = Post
-    form_class = SearchForm
+    form_class_search = SearchForm
 
     def get_queryset(self):
-        form = self.form_class(self.request.GET)
-        if form.is_valid():
-            print(form.cleaned_data['q'])
-            return Post.objects.filter(Q(description__contains=form.cleaned_data['q']) | Q(title__contains=form.cleaned_data['q'])).order_by('-created_at')
-        return Post.objects.order_by('-created_at')
+        search_form = self.form_class_search(self.request.GET)
+        order = self.order
+        if search_form.is_valid():
+            return Post.objects.filter(Q(description__contains=search_form.cleaned_data['q']) | Q(title__contains=search_form.cleaned_data['q'])).order_by(order)
+        for post in Post.objects.all(): #fix me
+            post.count_score()
+            post.save()
+        return Post.objects.order_by(order)
+
+    def dispatch(self, request, *args, **kwargs):
+        self.order = kwargs.get('order')
+        self.search_form = SearchForm(request.GET or None)
+        return super(PostList, self).dispatch(request, *args, **kwargs)  # error when empty fixme
 
 
 
@@ -96,7 +104,5 @@ class EditPostView(UpdateView):
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user)
 
-
     def get_success_url(self):
         return reverse('posts:detail', kwargs=({'pk': self.object.id}))
-

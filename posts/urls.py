@@ -5,7 +5,8 @@ from . import views
 
 urlpatterns = [
     # ex: /post/
-    url(r'^$', views.PostList.as_view(), name='index'),
+    url(r'^$', views.PostList.as_view(), {'order':'-created_at'}, name='index'),
+    url(r'^hot/', views.PostList.as_view(ordering='-score'), {'order':'-score'}, name='index_hot'),
     # ex: /posts/5/
     url(r'^(?P<pk>[0-9]+)/$', views.PostDetail.as_view(), name='detail'),
     url(r'^edit/(?P<pk>[0-9]+)/$', views.EditPostView.as_view(), name='edit'),
