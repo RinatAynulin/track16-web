@@ -6,6 +6,7 @@ urlpatterns = [
     # ex: /
     url(r'^$', views.index, name='index'),
     url(r'^users/(?P<user_id>[0-9]+)/$', views.user_details, name='user_details'),
+    url(r'^user_edit/(?P<pk>[0-9]+)/$', views.EditUserView.as_view(), name='user_edit'),
     url(r'^login/', login, name='login', kwargs={
         'template_name': 'core/login.html',
     }),

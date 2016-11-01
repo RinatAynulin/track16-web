@@ -3,13 +3,17 @@ from django.http import HttpResponse, Http404
 from django.template import loader
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
+from django.urls import reverse
 
 from .models import User
 from .forms import RegistrationForm
+
+
 def index(request):
     template = loader.get_template('core/index.html')
     return HttpResponse(template.render(request))
+
 
 def user_details(request, user_id):
     try:
@@ -18,9 +22,10 @@ def user_details(request, user_id):
         raise Http404('User does not exist')
     template = loader.get_template('core/user_details.html')
     context = {
-        'current_user' : user
+        'current_user': user
     }
     return HttpResponse(template.render(context, request))
+
 
 def logged_out(request):
     template = loader.get_template('core/logged_out.html')
@@ -34,5 +39,19 @@ class RegistrationView(CreateView):
     success_url = 'core:login'
 
     def get_success_url(self):
-        from django.urls import reverse
         return reverse(self.success_url)
+
+
+class EditUserView(UpdateView):
+    model = User
+    template_name = 'core/edit_user.html'
+
+    fields = ('username',
+              'email',
+              )
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
+
+    def get_success_url(self):
+        return reverse('core:user_details', kwargs=({'user_id': self.object.id}))

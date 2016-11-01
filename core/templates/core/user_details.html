@@ -1,28 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %} {{current_user.username}} {% endblock %}
+{% block title %} {{ current_user.username }} {% endblock %}
 
 {% block content %}
-  <h2> {{current_user.username}} {% if user.id == current_user.id %}(It's you){% endif %}</h2>
+    <h2> {{ current_user.username }} {% if user.id == current_user.id %}(It's you,
+        <a href="{% url "core:user_edit" user.id %}">edit</a>){% endif %}</h2>
 
-  <h3> User posts: </h3>
+    <h3> User posts: </h3>
     {% if current_user.user_posts %}
-      {% for post in current_user.user_posts.all %}
-      <div class="center-block">
-        <a href="/posts/{{ post.id }}/">{{ post.title }}</a>
-      </div>
-      {% endfor %}
+        {% for post in current_user.user_posts.all %}
+            <div class="center-block">
+                <a href="/posts/{{ post.id }}/">{{ post.title }}</a>
+            </div>
+        {% endfor %}
     {% else %}
-      <p>No posts are available.</p>
+        <p>No posts are available.</p>
     {% endif %}
-  <h3> User comments: <h3>
+    <h3> User comments: </h3>
     {% if current_user.user_comments %}
-      {% for comment in current_user.user_comments.all %}
-      <div class="center-block">
-        <a href="/comments/{{ comment.id }}/">{{ comment.comment }}</a>
-      </div>
-      {% endfor %}
+        {% for comment in current_user.user_comments.all %}
+            <div class="center-block">
+                <a href="/comments/{{ comment.id }}/">{{ comment.comment }}</a>
+            </div>
+        {% endfor %}
     {% else %}
-      <p>No comments are available.</p>
+        <p>No comments are available.</p>
     {% endif %}
 {% endblock %}
