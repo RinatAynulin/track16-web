@@ -15,6 +15,11 @@ class Post(models.Model):
     description = models.TextField(blank=True, null=True)
     score = models.IntegerField(default=0)
 
+    class Meta:
+        verbose_name = u'Post'
+        verbose_name_plural = u'Posts'
+        ordering = ('-created_at',)
+
     def count_score(self):
         self.score = PostVote.objects.filter(post=self).aggregate(models.Sum('vote_type')).get('vote_type__sum') or 0
 

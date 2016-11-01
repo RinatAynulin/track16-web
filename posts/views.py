@@ -26,7 +26,7 @@ class PostList(ListView):
     def get_queryset(self):
         if self.q:
             return Post.objects.filter(Q(description__contains=self.q) | Q(title__contains=self.q)).order_by(self.order)
-        for post in Post.objects.all(): #fix me
+        for post in Post.objects.all():  # fix me
             post.count_score()
             post.save()
         return Post.objects.order_by(self.order)
@@ -37,43 +37,33 @@ class PostList(ListView):
         self.search_form = SearchForm(request.GET or None)
         if self.search_form.is_valid():
             self.q = self.search_form.cleaned_data['q']
-        return super(PostList, self).dispatch(request, *args, **kwargs)  # error when empty fixme
-
+        return super(PostList, self).dispatch(request, *args, **kwargs)
 
 
 class PostDetail(CreateView):
     model = Comment
     template_name = 'posts/detail.html'
-    fields = ['comment']
+    fields = ('comment',)
+
+    def dispatch(self, request, pk=None, *args, **kwargs):
+        # when I used name 'post' instead of 'current_post', it rewrited field post (it's post request),
+        # and some **it happened
+        self.current_post = get_object_or_404(Post, id=pk)
+        print(self.current_post)
+        return super(PostDetail, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data(**kwargs)
-        context['post'] = self.post
-        # context['form'] = self.form
+        context['post'] = self.current_post
         return context
 
-    def dispatch(self, request, pk=None, *args, **kwargs):
-        self.post = get_object_or_404(Post, id=pk)
-        self.object = self.get_object()
-        # print(super(PostDetail, self))
-        self.form = CommentForm(request.POST or None)
-        if request.method == 'POST':
-            if self.form.is_valid():
-                comment = self.form.save(commit=False)
-                comment.user = request.user
-                comment.post = self.post
-                comment.save()
-                return redirect(self.get_success_url())
-        return super(PostDetail, self).dispatch(request, *args, **kwargs)  # error when empty fixme
-
-    # def form_valid(self, form):
-    #     form.instance.user = self.request.user
-    #     #form.instance.post = self.post
-    #     return super(PostDetail, self).form_valid(form)
-
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.post = self.current_post
+        return super(PostDetail, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('posts:detail', kwargs=({'pk': self.post.id}))
+        return '.'
 
 
 class CreatePostView(CreateView):
