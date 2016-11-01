@@ -18,7 +18,7 @@ def user_details(request, user_id):
         raise Http404('User does not exist')
     template = loader.get_template('core/user_details.html')
     context = {
-        'user' : user
+        'current_user' : user
     }
     return HttpResponse(template.render(context, request))
 

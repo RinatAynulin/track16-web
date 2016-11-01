@@ -33,8 +33,15 @@
                 <li><a href="/comments/">Comments</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                {% if user.is_authenticated %}
+                    <li><a target="_blank" href="{% url "core:user_details" user.id %}">{{ user.username }}</a></li>
+                {% endif %}
+                {% if user.is_anonymous %}
+                    <li><a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

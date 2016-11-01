@@ -24,18 +24,19 @@ class PostList(ListView):
     form_class_search = SearchForm
 
     def get_queryset(self):
-        search_form = self.form_class_search(self.request.GET)
-        order = self.order
-        if search_form.is_valid():
-            return Post.objects.filter(Q(description__contains=search_form.cleaned_data['q']) | Q(title__contains=search_form.cleaned_data['q'])).order_by(order)
+        if self.q:
+            return Post.objects.filter(Q(description__contains=self.q) | Q(title__contains=self.q)).order_by(self.order)
         for post in Post.objects.all(): #fix me
             post.count_score()
             post.save()
-        return Post.objects.order_by(order)
+        return Post.objects.order_by(self.order)
 
     def dispatch(self, request, *args, **kwargs):
         self.order = kwargs.get('order')
+        self.q = ""
         self.search_form = SearchForm(request.GET or None)
+        if self.search_form.is_valid():
+            self.q = self.search_form.cleaned_data['q']
         return super(PostList, self).dispatch(request, *args, **kwargs)  # error when empty fixme
 
 

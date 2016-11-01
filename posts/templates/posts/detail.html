@@ -32,7 +32,7 @@
 
     {% if user.is_anonymous %}
         <h5>You must be logged in in order to add comments!</h5>
-        <a href="{% url "core:login" %}">Log in</a>
+        <a href="{% url "core:login" %}?next={{request.path}}">Log in</a>
     {% else %}
     <form method="post">
         {% csrf_token %}

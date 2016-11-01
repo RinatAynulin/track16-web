@@ -47,7 +47,7 @@
     </form>
     {% else %}
     <h3> You must login before submitting </h3>
-    <h3><a href="{% url "core:login" %}">Log in</a><h3>
+    <h3><a href="{% url "core:login" %}?next={{request.path}}">Log in</a><h3>
     {% endif %}
 
 {% endblock %}
