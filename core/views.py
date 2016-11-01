@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.conf import settings
@@ -11,8 +11,9 @@ from .forms import RegistrationForm
 
 
 def index(request):
-    template = loader.get_template('core/index.html')
-    return HttpResponse(template.render(request))
+    # template = loader.get_template('core/index.html')
+    # return HttpResponse(template.render(request))
+    return redirect('posts:index')
 
 
 def user_details(request, user_id):
