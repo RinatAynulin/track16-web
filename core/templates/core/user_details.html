@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2> {{ current_user.username }} {% if user.id == current_user.id %}(It's you,
-        <a href="{% url "core:user_edit" user.id %}">edit</a>){% endif %}</h2>
+        <a href="{% url "core:user_edit"%}">edit</a>){% endif %}</h2>
 
     <h3> User posts: </h3>
     {% if current_user.user_posts %}

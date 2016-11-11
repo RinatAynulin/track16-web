@@ -5,7 +5,7 @@ from .models import User
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'password', 'email']
+        fields = ['username', 'email']
 
     def clean_username(self):
         try:
