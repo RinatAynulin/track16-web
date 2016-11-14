@@ -13,6 +13,8 @@ class PostVote(models.Model):
     post = models.ForeignKey('posts.Post')
     vote_type = models.IntegerField(choices=VOTE_TYPES)
 
+    #fixme
+
     def __unicode__(self):
         return 'User: {} \n Post: {} \n Vote: {}'.format(self.user.username, self.post.title, self.vote_type)
 

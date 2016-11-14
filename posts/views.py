@@ -23,10 +23,11 @@ class PostList(ListView):
     model = Post
     form_class_search = SearchForm
 
+
     def get_queryset(self):
         if self.q:
             return Post.objects.filter(Q(description__contains=self.q) | Q(title__contains=self.q)).order_by(self.order)
-        for post in Post.objects.all():  # fix me
+        for post in Post.objects.all():  # fixme
             post.count_score()
             post.save()
         return Post.objects.order_by(self.order)
@@ -34,10 +35,17 @@ class PostList(ListView):
     def dispatch(self, request, *args, **kwargs):
         self.order = kwargs.get('order')
         self.q = ""
+        self.search_placeholder = "search"
         self.search_form = SearchForm(request.GET or None)
         if self.search_form.is_valid():
             self.q = self.search_form.cleaned_data['q']
+            self.search_placeholder = self.q
         return super(PostList, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(PostList, self).get_context_data(**kwargs)
+        context['search_placeholder'] = self.search_placeholder
+        return context
 
 
 class PostDetail(CreateView):
@@ -46,8 +54,6 @@ class PostDetail(CreateView):
     fields = ('comment',)
 
     def dispatch(self, request, pk=None, *args, **kwargs):
-        # when I used name 'post' instead of 'current_post', it rewrited field post (it's post request),
-        # and some **it happened
         self.current_post = get_object_or_404(Post, id=pk)
         print(self.current_post)
         return super(PostDetail, self).dispatch(request, *args, **kwargs)
@@ -63,7 +69,7 @@ class PostDetail(CreateView):
         return super(PostDetail, self).form_valid(form)
 
     def get_success_url(self):
-        return '.'
+        return reverse('posts:detail', kwargs=({'pk': self.current_post.id}))
 
 
 class CreatePostView(CreateView):
