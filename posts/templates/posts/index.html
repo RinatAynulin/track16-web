@@ -61,16 +61,27 @@
             height: 0;
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
-
             border-bottom: 5px solid black;
+            margin-bottom: 5px;
         }
 
-        .inline {
-            display: inline-block;
+        .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+
+            border-top: 5px solid black;
         }
 
         .submit {
-            margin-top: 15px;
+            margin-top: 10px;
+        }
+
+        .vote {
+            vertical-align: top;
+            padding-top: 15px;
+            padding-right: 15px;
         }
     </style>
 {% endblock %}
@@ -79,22 +90,32 @@
 
     {% if latest_posts_list %} {% for post in latest_posts_list %}
         <div class="post">
-            <div class="inline">
-                <div class="arrow-up">
-                </div>
-                <div class="post-header">
-                    <p class="post-title"><a target="_blank" href="{{ post.url }}" class="header">{{ post.title }}</a>
-                        <span class="text-muted"> (<a target="_blank" href="{{ post.url }}">{{ post.url }}</a>)</span>
-                    </p>
-                </div>
-            </div>
+            <table>
+                <tr>
+                    <td class="vote">
+                        <div class="arrow-up">
+                        </div>
+                        <div class="arrow-down">
+                        </div>
+                    </td>
 
-            <div class="post-meta text-muted">
-                {{ post.created_at }} | by <a target="_blank" href="/users/{{ post.user.id }}/">{{ post.user }} </a> |
-                rating: {{ post.score }} | <a target="_blank"
-                                              href="{% url 'posts:detail' post.id %}">comments({{ post.comments_count }})</a>
-                | {% if user == post.user %} <a href="{% url 'posts:edit' post.id %}">Edit</a>  {% endif %}
-            </div>
+                    <td class="postcell">
+                        <div class="post-header">
+                            <p class="post-title"><a target="_blank" href="{{ post.url }}"
+                                                     class="header">{{ post.title }}</a>
+                                <span class="text-muted"> (<a target="_blank" href="{{ post.url }}">{{ post.url }}</a>)</span>
+                            </p>
+                        </div>
+                        <div class="post-meta text-muted">
+                            {{ post.created_at }} | by <a target="_blank"
+                                                          href="/users/{{ post.user.id }}/">{{ post.user }} </a> |
+                            rating: {{ post.score }} | <a target="_blank"
+                                                          href="{% url 'posts:detail' post.id %}">comments({{ post.comments_count }})</a>
+                            | {% if user == post.user %} <a href="{% url 'posts:edit' post.id %}">Edit</a>  {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
 
         </div>
