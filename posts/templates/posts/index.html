@@ -3,6 +3,7 @@
 
 {% block additional_style %}
     <link rel="stylesheet" href="{% static 'posts/css/index.css' %}"/>
+    <link rel="stylesheet" href="{% static 'posts/css/votes.css' %}"/>
 {% endblock %}
 
 {% block title %} Latest posts {% endblock %}
@@ -15,6 +16,7 @@
                     <td class="vote">
                         <div class="arrow-up">
                         </div>
+                        <span class="votes-count" data-post-id="{{ post.id }}" data-url="{% url 'posts:likes' pk=post.id %}"></span>
                         <div class="arrow-down">
                         </div>
                     </td>
@@ -59,4 +61,8 @@
 
     <a target="_blank" href="{% url "posts:submit" %}" class="btn btn-lg btn-danger btn-red submit">Submit a new
         post</a>
+{% endblock %}
+
+{% block additional_script %}
+<script src="{% static 'posts/js/likes.js' %}"></script>
 {% endblock %}

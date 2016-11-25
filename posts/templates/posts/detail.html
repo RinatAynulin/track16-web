@@ -1,14 +1,54 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
+{% block additional_style %}
+    <link rel="stylesheet" href="{% static 'posts/css/votes.css' %}"/>
+    <link rel="stylesheet" href="{% static 'posts/css/details.css' %}"/>
+{% endblock %}
 {% block title %} {{ post.title }} {% endblock %}
 {% block header %} {{ post.title }} {% endblock %}
 {% block content %}
 
-    <h2><a target="_blank" href={{ post.url }}>{{ post.title }}</a></h2>
-    <p>{{ post.description }}</p>
-    {{ post.created_at }} | by <a href="/users/{{ post.user.id }}/">{{ post.user }} </a> | rating:
-    {{ post.score }} | <a href="{% url 'posts:detail' post.id %}">comments</a> |
-    {% if user == post.user %} <a href="{% url 'posts:edit' post.id %}">Edit</a>  {% endif %}
+    <div class="post">
+        <table>
+            <tr>
+                <td class="vote">
+                    <div class="arrow-up">
+                    </div>
+                    <span class="votes-count">{{ post.score }}</span>
+                    <div class="arrow-down">
+                    </div>
+                </td>
+
+                <td class="postcell">
+                    <div class="post-header">
+                        <p class="post-title"><a target="_blank" href="{{ post.url }}"
+                                                 class="header">{{ post.title }}</a>
+                            <span class="text-muted"> (<a target="_blank"
+                                                          href="{{ post.url }}">{{ post.url }}</a>)</span>
+                        </p>
+                    </div>
+                    <div class="post-meta text-muted">
+                        {{ post.created_at }} | by <a target="_blank"
+                                                      href="/users/{{ post.user.id }}/">{{ post.user }} </a> |
+                        rating: {{ post.score }} | <a target="_blank"
+                                                      href="{% url 'posts:detail' post.id %}">comments({{ post.comments_count }})</a>
+                        | {% if user == post.user %} <a href="{% url 'posts:edit' post.id %}">Edit</a>  {% endif %}
+                    </div>
+
+                <div class="post-description">
+                    {{ post.description }}
+                </div>
+
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+
+
 
     <h5>{{ post.comments_count }} comments:</h5>
     {% if post.post_comments.all %}
@@ -18,7 +58,8 @@
                 <div class="col-sm-5">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <strong><a href="/users/{{ comment.user.id }}/">{{ comment.user }} </a></strong> <span class="text-muted">commented {{ comment.created_at }}</span>
+                            <strong><a href="/users/{{ comment.user.id }}/">{{ comment.user }} </a></strong> <span
+                                class="text-muted">commented {{ comment.created_at }}</span>
                             {% if comment.user == user %}
                                 <a href="{% url "comments:edit" pk=comment.id %}">Edit</a>
                             {% endif %}

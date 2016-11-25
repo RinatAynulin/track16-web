@@ -4,9 +4,11 @@ from functools import reduce
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, Sum
 from django.http import HttpResponse, Http404
+from django.http import JsonResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views import View
 from django.views.generic import CreateView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
@@ -22,7 +24,6 @@ class PostList(ListView):
     context_object_name = 'latest_posts_list'
     model = Post
     form_class_search = SearchForm
-
 
     def get_queryset(self):
         if self.q:
@@ -103,3 +104,29 @@ class EditPostView(UpdateView):
 
     def get_success_url(self):
         return reverse('posts:detail', kwargs=({'pk': self.object.id}))
+
+
+class PostLikesCountView(View):
+    current_post = None
+
+    def dispatch(self, request, pk=None, *args, **kwargs):
+        self.current_post = get_object_or_404(Post, pk=pk)
+        return super(PostLikesCountView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        self.current_post.count_score()
+        return HttpResponse(self.current_post.score)
+
+
+class PostLikes(View):
+    def get(self, request):
+        ids = request.GET.get('ids', '')
+        ids = ids.split(',')
+        for post in Post.objects.filter(id__in=ids):
+            post.count_score()
+            post.save()  # fixme wtf
+        posts = dict(Post.objects.filter(id__in=ids).values_list('id', 'score'))
+        return JsonResponse(posts)
+
+    def post(self, request):
+        pass  # todo
