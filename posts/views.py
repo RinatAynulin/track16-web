@@ -16,6 +16,7 @@ from django.views.generic import UpdateView
 from comments.forms import CommentForm
 from comments.models import Comment
 from posts.forms import SearchForm
+from votes.models import PostVote
 from .models import Post
 
 
@@ -106,6 +107,14 @@ class EditPostView(UpdateView):
         return reverse('posts:detail', kwargs=({'pk': self.object.id}))
 
 
+def opposite_type(vote_type):
+    vote_type = int(vote_type)
+    if vote_type is 1:
+        return -1
+    else:
+        return 1
+
+
 class PostLikesCountView(View):
     current_post = None
 
@@ -117,6 +126,29 @@ class PostLikesCountView(View):
         self.current_post.count_score()
         return HttpResponse(self.current_post.score)
 
+    def post(self, request):
+        user = request.user
+        vote_type = request.POST.get("vote-type")
+        likes_count = self.current_post.score
+        if not PostVote.objects.filter(user=user, post=self.current_post,
+                                       vote_type=vote_type).exists():
+
+            if PostVote.objects.filter(user=user, post=self.current_post,
+                                       vote_type=opposite_type(vote_type)).exists():
+                vote = PostVote.objects.filter(user=user, post=self.current_post,
+                                               vote_type=opposite_type(vote_type))[0]
+                vote.vote_type = vote_type
+                vote.save()
+            else:
+                vote = PostVote()
+                vote.user = user
+                vote.post = self.current_post
+                vote.vote_type = vote_type
+                vote.save()
+            self.current_post.count_score()
+            likes_count = self.current_post.score
+        return HttpResponse(likes_count)
+
 
 class PostLikes(View):
     def get(self, request):
@@ -127,6 +159,3 @@ class PostLikes(View):
             post.save()  # fixme wtf
         posts = dict(Post.objects.filter(id__in=ids).values_list('id', 'score'))
         return JsonResponse(posts)
-
-    def post(self, request):
-        pass  # todo

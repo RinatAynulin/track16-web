@@ -14,10 +14,10 @@
             <table>
                 <tr>
                     <td class="vote">
-                        <div class="arrow-up">
+                        <div class="arrow-up" data-post-id="{{ post.id }}" data-url="{% url 'posts:likes' pk=post.id %}">
                         </div>
                         <span class="votes-count" data-post-id="{{ post.id }}" data-url="{% url 'posts:likes' pk=post.id %}"></span>
-                        <div class="arrow-down">
+                        <div class="arrow-down" data-post-id="{{ post.id }}" data-url="{% url 'posts:likes' pk=post.id %}">
                         </div>
                     </td>
 
