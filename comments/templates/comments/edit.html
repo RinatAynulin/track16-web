@@ -1,0 +1,10 @@
+<form method="post" class="form-general form-ajax" action="{% url "comments:edit_form" pk=comment.id %}">
+    {% csrf_token %}
+    {% for field in form %}
+        <p>{{ field.label }}</p>
+        <p>{{ field }}</p>
+        <p>{{ field.errors }}</p>
+    {% endfor %}
+
+    <button class="btn btn-large btn-primary" type="submit">Edit</button>
+</form>

@@ -38,3 +38,20 @@ class EditCommentView(UpdateView):
 
     def get_success_url(self):
         return reverse('posts:detail', kwargs=({'pk': self.object.post.id}))
+
+class EditCommentFormView(UpdateView):
+    template_name = 'comments/edit.html'
+    model = Comment
+    fields = (
+        'comment',
+    )
+
+    def get_queryset(self):
+        return Comment.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        return reverse('posts:detail', kwargs=({'pk': self.object.post.id}))
+
+    def form_valid(self, form):
+        response = super(EditCommentFormView, self).form_valid(form)
+        return HttpResponse('success')

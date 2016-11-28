@@ -107,6 +107,26 @@ class EditPostView(UpdateView):
         return reverse('posts:detail', kwargs=({'pk': self.object.id}))
 
 
+class EditPostFormView(UpdateView):
+    template_name = 'posts/edit_form.html'
+    model = Post
+    fields = (
+        'title',
+        'url',
+        'description'
+    )
+
+    def get_queryset(self):
+        return Post.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        return reverse('posts:detail', kwargs=({'pk': self.object.id}))
+
+    def form_valid(self, form):
+        response = super(EditPostFormView, self).form_valid(form)
+        return HttpResponse('success')
+
+
 def opposite_type(vote_type):
     vote_type = int(vote_type)
     if vote_type is 1:
