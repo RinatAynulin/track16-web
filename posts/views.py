@@ -159,3 +159,22 @@ class PostLikes(View):
             post.save()  # fixme wtf
         posts = dict(Post.objects.filter(id__in=ids).values_list('id', 'score'))
         return JsonResponse(posts)
+
+
+class LikedPosts(View):
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            ids = request.GET.get('ids', '')
+            ids = ids.split(',')
+            result = dict()
+            for post in Post.objects.filter(id__in=ids):
+                if PostVote.objects.filter(user=user, post=post, vote_type=1).exists():
+                    result[post.id] = 1
+                elif PostVote.objects.filter(user=user, post=post, vote_type=1).exists():
+                    result[post.id] = -1
+                else:
+                    result[post.id] = 0
+            return JsonResponse(result)
+        else:
+            return HttpResponse('auth required')

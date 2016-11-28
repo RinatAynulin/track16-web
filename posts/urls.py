@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/$', views.PostDetail.as_view(), name='detail'),
     url(r'^(?P<pk>[0-9]+)/likes$', views.PostLikesCountView.as_view(), name='likes'),
     url(r'^likes$', views.PostLikes.as_view(), name='likes'),
+    url(r'^liked_posts$', views.LikedPosts.as_view(), name='liked_posts'),
     url(r'^edit/(?P<pk>[0-9]+)/$', views.EditPostView.as_view(), name='edit'),
     url(r'^submit/$', login_required(views.CreatePostView.as_view()), name='submit'),
 ]

@@ -15,7 +15,7 @@ function getCookie(name) {
 
 $(document).ready(function () {
     function update_likes() {
-        ids = Array()
+        ids = Array();
 
         $('.votes-count').each(function () {
             ids.push($(this).data('post-id'));
@@ -23,12 +23,31 @@ $(document).ready(function () {
 
         $.getJSON('/posts/likes', {ids: ids.join(',')}, function (data) {
             for (var i in data) {
-                $('.votes-count[data-post-id='+i+']').html(data[i])
+                $('.votes-count[data-post-id=' + i + ']').html(data[i])
             }
         })
     }
 
+    function get_liked_posts() {
+        ids = Array();
+
+        $('.votes-count').each(function () {
+            ids.push($(this).data('post-id'));
+        });
+
+        $.getJSON('/posts/liked_posts', {ids: ids.join(',')}, function (data) {
+            for (var i in data) {
+                if (data[i] == 1) {
+                    $('.arrow-up[data-post-id=' + i + ']').css('border-bottom', '10px solid blue');
+                } else if (data[i] == -1) {
+                    $('.arrow-down[data-post-id=' + i+ ']').css('border-top', '10px solid blue');
+                }
+            }
+        });
+    }
+
     update_likes();
+    get_liked_posts();
     window.setInterval(update_likes, 5000);
 
     $('.arrow-up').click(function () {
