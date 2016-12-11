@@ -23,7 +23,7 @@ class Post(models.Model):
         ordering = ('-created_at',)
 
     def count_score(self):
-        self.score = PostVote.objects.filter(post=self).aggregate(models.Sum('vote_type')).get('vote_type__sum') or 0
+        return PostVote.objects.filter(post=self).aggregate(models.Sum('vote_type')).get('vote_type__sum') or 0
 
     def comments_count(self):
         return Comment.objects.filter(post=self).count()

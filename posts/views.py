@@ -26,6 +26,7 @@ class PostList(ListView):
     context_object_name = 'latest_posts_list'
     model = Post
     form_class_search = SearchForm
+    paginate_by = 8
 
     def get_queryset(self):
         if self.q:
@@ -143,7 +144,7 @@ class PostLikesCountView(View):
         return super(PostLikesCountView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        self.current_post.count_score()
+        #self.current_post.count_score()
         return HttpResponse(self.current_post.score)
 
     def post(self, request):
@@ -159,15 +160,17 @@ class PostLikesCountView(View):
                                                vote_type=opposite_type(vote_type))[0]
                 vote.vote_type = vote_type
                 vote.save()
+                add = int(vote_type) * 2
             else:
                 vote = PostVote()
                 vote.user = user
                 vote.post = self.current_post
                 vote.vote_type = vote_type
                 vote.save()
-            self.current_post.count_score()
-            self.current_post.save()
-            likes_count = self.current_post.score
+                add = int(vote_type)
+            print(add)
+            Post.objects.filter(id=self.current_post.id).update(score=models.F('score') + add)
+            likes_count = self.current_post.score + add
         return HttpResponse(likes_count)
 
 
