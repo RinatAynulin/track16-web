@@ -2,10 +2,12 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.conf import settings
-from django.db.models import Sum
+from django.utils.cache import caches
 
 from votes.models import PostVote, CommentVote
 from comments.models import Comment
+
+cache = caches['default']
 
 class Post(models.Model):
     title = models.CharField(max_length=255)

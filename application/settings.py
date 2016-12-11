@@ -27,9 +27,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+INTERNAL_IPS = '127.0.0.1',
 # Application definition
 
+CACHES = {
+    'default' : {
+        'BACKEND' : 'django.core.cache.backends.memcached.MemcacheCache',
+        'LOCATION' : '127.0.0.1:11211',
+    }
+}
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +47,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'votes.apps.VotesConfig',
     'comments.apps.CommentsConfig',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'

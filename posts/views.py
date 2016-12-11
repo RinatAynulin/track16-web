@@ -2,6 +2,7 @@ import operator
 from functools import reduce
 
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
 from django.db.models import Q, Sum
 from django.http import HttpResponse, Http404
 from django.http import JsonResponse
@@ -29,10 +30,10 @@ class PostList(ListView):
     def get_queryset(self):
         if self.q:
             return Post.objects.filter(Q(description__contains=self.q) | Q(title__contains=self.q)).order_by(self.order)
-        for post in Post.objects.all():  # fixme
-            post.count_score()
-            post.save()
-        return Post.objects.order_by(self.order)
+
+        return Post.objects.select_related('user')\
+            .annotate(comment_count=models.Count('post_comments'))\
+            .order_by(self.order)
 
     def dispatch(self, request, *args, **kwargs):
         self.order = kwargs.get('order')
@@ -57,7 +58,6 @@ class PostDetail(CreateView):
 
     def dispatch(self, request, pk=None, *args, **kwargs):
         self.current_post = get_object_or_404(Post, id=pk)
-        print(self.current_post)
         return super(PostDetail, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -166,6 +166,7 @@ class PostLikesCountView(View):
                 vote.vote_type = vote_type
                 vote.save()
             self.current_post.count_score()
+            self.current_post.save()
             likes_count = self.current_post.score
         return HttpResponse(likes_count)
 
@@ -174,9 +175,6 @@ class PostLikes(View):
     def get(self, request):
         ids = request.GET.get('ids', '')
         ids = ids.split(',')
-        for post in Post.objects.filter(id__in=ids):
-            post.count_score()
-            post.save()  # fixme wtf
         posts = dict(Post.objects.filter(id__in=ids).values_list('id', 'score'))
         return JsonResponse(posts)
 
