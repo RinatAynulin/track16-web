@@ -191,7 +191,7 @@ class LikedPosts(View):
             for post in Post.objects.filter(id__in=ids):
                 if PostVote.objects.filter(user=user, post=post, vote_type=1).exists():
                     result[post.id] = 1
-                elif PostVote.objects.filter(user=user, post=post, vote_type=1).exists():
+                elif PostVote.objects.filter(user=user, post=post, vote_type=-1).exists():
                     result[post.id] = -1
                 else:
                     result[post.id] = 0
