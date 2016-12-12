@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 from django.utils.cache import caches
+from django.utils.functional import cached_property
 
 from votes.models import PostVote, CommentVote
 from comments.models import Comment

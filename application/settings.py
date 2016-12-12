@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -31,9 +30,9 @@ INTERNAL_IPS = '127.0.0.1',
 # Application definition
 
 CACHES = {
-    'default' : {
-        'BACKEND' : 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION' : '127.0.0.1:11211',
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
     }
 }
 INSTALLED_APPS = [
@@ -81,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'application.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -92,10 +90,8 @@ DATABASES = {
     }
 }
 
-
 LOGIN_REDIRECT_URL = "core:index"
 LOGIN_URL = "core:login"
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -115,7 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -129,7 +124,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 #
@@ -140,10 +134,9 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = '/home/oleg/Web/project/collected_static/'
+# STATIC_ROOT = '/home/oleg/Web/project/collected_static/'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'collected_static/')
-#STATICFILES_DIRS = ('/home/oleg/Web/project/src/static/', )
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'), )
-
+# STATICFILES_DIRS = ('/home/oleg/Web/project/src/static/', )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 AUTH_USER_MODEL = 'core.User'

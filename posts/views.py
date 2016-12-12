@@ -58,7 +58,7 @@ class PostDetail(CreateView):
     fields = ('comment',)
 
     def dispatch(self, request, pk=None, *args, **kwargs):
-        self.current_post = get_object_or_404(Post, id=pk)
+        self.current_post = get_object_or_404(Post.objects.select_related('user').prefetch_related('post_comments', 'post_comments__user'), id=pk)
         return super(PostDetail, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
